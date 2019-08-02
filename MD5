@@ -1,0 +1,8 @@
+649a8b1d2970f3ee62786f641a84f859 *DESCRIPTION
+153c3fdb0cf0216e85417f58dd2f0e34 *NAMESPACE
+5591fcef1455783445854106e9c9ba96 *R/GeneralisedCovarianceMeasure.R
+48ecea73732a70a562f83e14051cbb2d *R/gcm-utils.R
+20ec1f27de7dec48616ca259b85fc21a *R/gcm.R
+048a0f4fdf55bbcc811a8636503a9ed0 *man/GeneralisedCovarianceMeasure.Rd
+bb28bd8485599768191f79b694519cda *man/comp.resids.Rd
+a482b99096d5d92a221e61e0a37779a0 *man/gcm.test.Rd
