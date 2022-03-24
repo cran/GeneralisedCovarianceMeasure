@@ -1,8 +1,12 @@
 #' Test for Conditional Independence Based on the Generalized Covariance Measure (GCM)
 #'
 #' @param X A (nxp)-dimensional matrix (or data frame) with n observations of p variables.
+#' If set to NULL, resid.XonZ has to be provided. 
 #' @param Y A (nxp)-dimensional matrix (or data frame) with n observations of p variables.
+#' If set to NULL, resid.YonZ has to be provided. 
 #' @param Z A (nxp)-dimensional matrix (or data frame) with n observations of p variables.
+#' If set to NULL and resid.XonZ set to NULL, then resid.XonZ is set to X.
+#' If set to NULL and resid.YonZ set to NULL, then resid.YonZ is set to Y.
 #' @param alpha Significance level of the test.
 #' @param regr.method A string indicating the regression method that is used. Currently implemented are 
 #' "gam", "xgboost", "kernel.ridge". The regression is performed only if 
@@ -12,8 +16,10 @@
 #' @param nsim An integer indicating the number of bootstrap samples used to approximate the null distribution of the
 #' test statistic.
 #' @param resid.XonZ It is possible to directly provide the residuals instead of performing a regression. 
+#' If not set to NULL, X is ignored.
 #' If set to NULL, the regression method specified in regr.method is used. 
 #' @param resid.YonZ It is possible to directly provide the residuals instead of performing a regression. 
+#' If not set to NULL, Y is ignored.
 #' If set to NULL, the regression method specified in regr.method is used. 
 #' 
 #' @return The function tests whether X is conditionally independent of Y given Z. The output is a list containing
@@ -27,7 +33,7 @@
 #' Please cite the following paper.
 #' Rajen D. Shah, Jonas Peters: 
 #' "The Hardness of Conditional Independence Testing and the Generalised Covariance Measure"
-#' \url{https://arxiv.org/abs/1804.07203}
+#' Annals of Statistics 48(3), 1514--1538, 2020.
 #' 
 #' @examples 
 #' set.seed(1)
@@ -40,13 +46,20 @@
 #' gcm.test(X, Y2, Z, regr.method = "gam")
 #' 
 #' @export
-gcm.test <- function(X, Y, Z = NULL, alpha = 0.05, regr.method = "xgboost", regr.pars = list(),
+gcm.test <- function(X = NULL, Y = NULL, Z = NULL, alpha = 0.05, regr.method = "xgboost", regr.pars = list(),
                      plot.residuals = FALSE, nsim=499L, resid.XonZ=NULL, resid.YonZ=NULL) {
   if (is.null(Z)) {
-    resid.XonZ <- X
-    resid.YonZ <- Y
+    if(is.null(resid.XonZ)){
+      resid.XonZ <- X
+    }
+    if(is.null(resid.YonZ)){
+      resid.YonZ <- Y
+    }
   } else {
     if (is.null(resid.XonZ)) {
+      if(is.null(X)){
+        stop("Either X or resid.XonZ must be provided.")
+      }
       resid_func <- function(V) comp.resids(V, Z, regr.pars, regr.method)
       if (is.matrix(X)) {
         # For KRR this approach should be much faster as the kernel matrix doesn't change
@@ -57,6 +70,9 @@ gcm.test <- function(X, Y, Z = NULL, alpha = 0.05, regr.method = "xgboost", regr
       }
     }
     if (is.null(resid.YonZ)) {
+      if(is.null(Y)){
+        stop("Either Y or resid.YonZ must be provided.")
+      }
       resid_func <- function(V) comp.resids(V, Z, regr.pars, regr.method)
       if (is.matrix(Y)) {
         resid.YonZ <- apply(Y, 2, resid_func)
@@ -128,7 +144,7 @@ gcm.test <- function(X, Y, Z = NULL, alpha = 0.05, regr.method = "xgboost", regr
 #' Please cite the following paper.
 #' Rajen D. Shah, Jonas Peters: 
 #' "The Hardness of Conditional Independence Testing and the Generalised Covariance Measure"
-#' https://arxiv.org/abs/1804.07203
+#' Annals of Statistics 48(3), 1514--1538, 2020.
 #' 
 #' @examples 
 #' set.seed(1)

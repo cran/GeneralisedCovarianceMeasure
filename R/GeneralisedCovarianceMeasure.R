@@ -6,7 +6,7 @@
 #' Please cite the following paper.
 #' Rajen D. Shah, Jonas Peters:
 #' "The Hardness of Conditional Independence Testing and the Generalised Covariance Measure"
-#' \url{https://arxiv.org/abs/1804.07203}
+#' Annals of Statistics 48(3), 1514--1538, 2020.
 #'
 #' @docType package
 #'
